@@ -1,4 +1,4 @@
-const CACHE_NAME = 'siges-cache-202606181712';
+const CACHE_NAME = 'siges-cache-202606181714';
 self.addEventListener('install', (event) => { self.skipWaiting(); });
 self.addEventListener('activate', (event) => {
     event.waitUntil(

@@ -1,1 +1,887 @@
-<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>Portal En Construcción</title><style>body { margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: white; overflow: hidden; font-family: sans-serif; }.container { text-align: center; }img { max-width: 90%; height: auto; display: block; margin: 0 auto; }p { color: #555; margin-top: 20px; font-size: 1.2em; }</style></head><body><div class="container"><img src="construccion.png" alt="Portal en construcción"><p>🏗️ Próximamente disponible para todos los copropietarios.</p></div></body></html>
+
+    <!DOCTYPE html>
+    <html lang="es">
+    <head><title>Portal Financiero - Edificio Creativa II</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://cdn.counter.dev/script.js" data-id="061a02f0-8a43-4280-a56b-1e5cf920b409" data-utcoffset="-4"></script>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <style>
+            body { background-color: #f4f1ea; font-family: 'Segoe UI', sans-serif; }
+            .navbar { background: linear-gradient(90deg, #5d4037 0%, #8d6e63 100%); color: white; border-bottom: 5px solid #a8c69f; padding: 20px 0; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+            .navbar-brand-custom { font-size: 1.75rem; font-weight: 800; letter-spacing: -0.5px; text-shadow: 1px 1px 2px rgba(0,0,0,0.2); }
+            .badge-periodo { 
+                font-size: 1rem; padding: 8px 18px; 
+                background-color: rgba(255,255,255,0.15); 
+                border: 1px solid rgba(255,255,255,0.3); 
+                backdrop-filter: blur(5px);
+                display: flex; flex-direction: column; align-items: flex-end; line-height: 1.2;
+            }
+            .fecha-sync { font-size: 0.65rem; font-weight: normal; opacity: 0.8; margin-top: 2px; }
+            .card-metric { background: white; border-top: 4px solid #8d6e63; border-radius: 8px; padding: 15px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); min-height: 90px; }
+            .table-container { background: white; border-radius: 8px; padding: 15px; overflow-x: auto; margin-bottom: 20px; }
+            .text-center th { text-align: center !important; }
+            .text-center td { text-align: center !important; vertical-align: middle; }
+            
+            .resumen-monto td:nth-child(4) { 
+                text-align: right !important; 
+                padding-right: 25px !important; 
+                font-family: 'Consolas', 'Monaco', monospace; 
+            }
+            .resumen-monto th:nth-child(4) { 
+                text-align: right !important; 
+                padding-right: 25px !important; 
+                font-weight: bold !important;
+            }
+            
+            .detalle-monto td:nth-child(5) { 
+                text-align: right !important; 
+                padding-right: 25px !important; 
+                font-family: 'Consolas', 'Monaco', monospace;
+            }
+            .detalle-monto th:nth-child(5) { 
+                text-align: right !important; 
+                padding-right: 25px !important; 
+                font-weight: bold !important;
+            }
+            .resumen-monto th, .detalle-monto th { text-align: center; }
+            .resumen-monto td:not(:nth-child(4)), 
+            .detalle-monto td:not(:nth-child(5)) 
+            { text-align: center; }
+            .section-title { color: #8d6e63; font-weight: bold; margin-top: 25px; border-left: 5px solid #a8c69f; padding-left: 10px; margin-bottom: 15px; }
+            .nota-salud { padding: 20px; border-radius: 8px; margin-bottom: 20px; color: white; text-align: center; }
+            .alert-info-custom { background-color: #d1ecf1; border-left: 6px solid #0c5460; color: #0c5460; padding: 15px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+            .progress { height: 20px; background-color: #e9ecef; border-radius: 10px; margin-top: 8px; }
+            .progress-bar { background-color: #a8c69f; color: #2c3e50; font-weight: bold; }
+            .table-control thead th { background-color: #2F5597; color: white; white-space: nowrap; }
+            .table-control td { text-align: center; vertical-align: middle; white-space: nowrap; }
+            .sticky-col { position: sticky; left: 0; z-index: 2; border-right: 2px solid #2F5597 !important; }
+            .nav-pills .nav-link { color: #8d6e63; border: 1px solid #8d6e63; margin-right: 5px; }
+            .nav-pills .nav-link.active { background-color: #8d6e63; color: white; border: 1px solid #8d6e63; }
+            footer { margin-top: 50px; padding: 25px 0; border-top: 1px solid #ddd; color: #8d6e63; font-size: 0.85rem; text-align: center; }
+
+            /* --- ESTILOS MODERNOS EXCLUSIVOS DEL POP-UP --- */
+            .modal-aviso-overlay {
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                background-color: rgba(0, 0, 0, 0.7); backdrop-filter: blur(4px);
+                display: flex; 
+                justify-content: center; align-items: center; z-index: 999999;
+            }
+            .modal-aviso-contenedor {
+                background-color: #ffffff; width: 90%; max-width: 550px;
+                border-radius: 14px; box-shadow: 0 15px 35px rgba(0,0,0,0.35);
+                overflow: hidden; animation: zoomInAviso 0.3s ease-out;
+            }
+            @keyframes zoomInAviso {
+                from { transform: scale(0.85); opacity: 0; }
+                to { transform: scale(1); opacity: 1; }
+            }
+            .modal-aviso-cabecera {
+                background: linear-gradient(135deg, #c0392b, #e74c3c);
+                color: #ffffff; padding: 20px; text-align: center;
+            }
+            .modal-aviso-cabecera h2 { margin: 0; font-size: 1.5rem; font-weight: 700; letter-spacing: 0.5px; }
+            .modal-aviso-meta { font-size: 0.82rem; color: #f9d5d5; margin-top: 5px; opacity: 0.9; }
+            .modal-aviso-cuerpo { padding: 25px; color: #2c3e50; line-height: 1.6; }
+            .modal-aviso-pie { padding: 15px 25px; background-color: #f8f9fa; text-align: right; border-top: 1px solid #eedede; }
+            .btn-aviso-entendido {
+                background-color: #e74c3c; color: #ffffff; border: none;
+                padding: 9px 22px; font-size: 0.95rem; font-weight: bold;
+                border-radius: 6px; cursor: pointer; transition: all 0.2s;
+            }
+            .btn-aviso-entendido:hover { background-color: #c0392b; transform: translateY(-1px); }
+        </style>
+
+        <link rel="manifest" href="./manifest.json">
+        <meta name="theme-color" content="#1e293b">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <link rel="apple-touch-icon" href="./Logo.png">
+
+        <script>
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('./sw.js')
+                        .then(reg => console.log('SiGes modo móvil activo'))
+                        .catch(err => console.log('Error PWA', err));
+                });
+            }
+        </script>
+    </head>
+    <body>
+        
+        
+                    <div class="modal-aviso-overlay" id="modalAvisoCopropietarios">
+                        <div class="modal-aviso-contenedor">
+                            <div class="modal-aviso-cabecera">
+                                <h2>🔔 AVISO IMPORTANTE</h2>
+                                <div class="modal-aviso-meta">📅 30/05/2026 | 📌 Categoría: Imprevisto</div>
+                            </div>
+                            <div class="modal-aviso-cuerpo">
+                                <p class="fs-5"><strong>Anegamiento en Subterraneo</strong></p>
+                                <p style="white-space: pre-line;">El subterraneo se encuentra anegado por filtración de agua. Se están realizando todas las gestiones para solucionar este tema a la mayor brevedad posible. Se agradece su comprensión.</p>
+                            </div>
+                            <div class="modal-aviso-pie">
+                                <button class="btn-aviso-entendido" onclick="document.getElementById('modalAvisoCopropietarios').style.display='none'">Entendido</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+
+        <nav class="navbar navbar-dark mb-4">
+            <div class="container d-flex justify-content-between align-items-center">
+                <span class="navbar-brand-custom">🏢 Gestión Financiera Edificio Creativa II</span>
+                <div class="badge rounded-pill badge-periodo">
+                    <span>Período: 05/2026</span>
+                    <span class="fecha-sync">Actualizado el: 18/06/2026 16:23</span>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container">
+            <!-- --- NAVBAR DE PESTAÑAS (MUESTRA LA NUEVA PESTAÑA SI TIENE CONTENIDO) --- -->
+            <ul class="nav nav-tabs mb-4" id="portalTabs" role="tablist">
+                <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#balance">📊 Balance</button></li>
+                <li class="nav-item"><button class="nav-link " data-bs-toggle="tab" data-bs-target="#salud">📈 Resumen Financiero</button></li>
+                <li class="nav-item"><button class="nav-link " data-bs-toggle="tab" data-bs-target="#morosidad">🚦 Morosidad</button></li>
+                <li class="nav-item"><button class="nav-link " data-bs-toggle="tab" data-bs-target="#control">🗓️ Control de Pagos</button></li>
+                <li class="nav-item"><button class="nav-link " data-bs-toggle="tab" data-bs-target="#tab-pdf">📄 Informes PDFs</button></li>
+                <li class="nav-item"><button class="nav-link " data-bs-toggle="tab" data-bs-target="#tab-comunicados">📢 Comunicados</button></li>
+            </ul>
+
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="balance">
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-3"><div class="card-metric"><small class="fw-bold">Saldo Inicial</small><div class="h5">$ 339.885</div></div></div>
+                        <div class="col-md-3"><div class="card-metric"><small class="fw-bold">Ingresos (+)</small><div class="h5 text-success">$ 1.448.996</div></div></div>
+                        <div class="col-md-3"><div class="card-metric"><small class="fw-bold">Egresos (-)</small><div class="h5 text-danger">$ 1.338.165</div></div></div>
+                        <div class="col-md-3"><div class="card-metric"><small class="fw-bold">Saldo Final</small><div class="h5">$ 450.716</div></div></div>
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col-md-7">
+                            <h5 class="section-title">⚖️ Gestión de Caja y Solvencia</h5>
+                            <div style="background-color: #d4edda; color: #155724; padding:15px; border-radius:8px; border:1px solid;">
+                                <strong>Nota:</strong> La recaudación cubrió el 100% de los egresos. Se generó un excedente de $ 110.831 para el próximo mes.
+                            </div>
+                            <div class="mt-3 p-2">
+                                <strong>Disponibilidad Total de Fondos: 25.2%</strong>
+                                <div class="progress"><div class="progress-bar" style="width: 25.195415458043325%"></div></div>
+                                <p class="text-muted mb-1" style="font-size: 0.85em; font-style: italic;">
+                                    * Porcentaje de dinero remanente sobre el total de recursos que circularon en el mes.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-md-5"><div>                        <script type="text/javascript">window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.3.1.min.js" integrity="sha256-4rD3fugVb/nVJYUv5Ky3v+fYXoouHaBSP20WIJuEiWg=" crossorigin="anonymous"></script>                <div id="6b6ebbb7-97bc-46c6-9a62-68cec2c1e2a5" class="plotly-graph-div" style="height:400px; width:100%;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("6b6ebbb7-97bc-46c6-9a62-68cec2c1e2a5")) {                    Plotly.newPlot(                        "6b6ebbb7-97bc-46c6-9a62-68cec2c1e2a5",                        [{"domain":{"x":[0,1],"y":[0.15,1]},"gauge":{"axis":{"range":[0,150],"ticksuffix":"%"},"bar":{"color":"#31333F"},"steps":[{"color":"#e1f5fe","range":[0,100]},{"color":"#f8d7da","range":[100,200]}],"threshold":{"line":{"color":"black","width":4},"thickness":0.75,"value":100}},"mode":"gauge+number","number":{"font":{"color":"#28a745","size":50},"suffix":"%","valueformat":".1f"},"title":{"font":{"size":20},"text":"\u003cb\u003e\u00cdndice de Gasto Operativo\u003c\u002fb\u003e\u003cbr\u003e\u003cspan style='font-size:0.8em;color:gray'\u003e(Egresos \u002f Ingresos del Mes)\u003c\u002fspan\u003e"},"value":92.35118661473184,"type":"indicator"}],                        {"annotations":[{"align":"center","font":{"color":"#28a745","size":16},"showarrow":false,"text":"\u003cb\u003e\u2705 Gastamos solo el 92.4% de lo recaudado\u003c\u002fb\u003e","x":0.5,"y":0.1}],"height":400,"margin":{"b":20,"l":30,"r":30,"t":80},"template":{"data":{"candlestick":[{"decreasing":{"line":{"color":"#000033"}},"increasing":{"line":{"color":"#000032"}},"type":"candlestick"}],"contourcarpet":[{"colorscale":[[0.0,"#000011"],[0.1111111111111111,"#000012"],[0.2222222222222222,"#000013"],[0.3333333333333333,"#000014"],[0.4444444444444444,"#000015"],[0.5555555555555556,"#000016"],[0.6666666666666666,"#000017"],[0.7777777777777778,"#000018"],[0.8888888888888888,"#000019"],[1.0,"#000020"]],"type":"contourcarpet"}],"contour":[{"colorscale":[[0.0,"#000011"],[0.1111111111111111,"#000012"],[0.2222222222222222,"#000013"],[0.3333333333333333,"#000014"],[0.4444444444444444,"#000015"],[0.5555555555555556,"#000016"],[0.6666666666666666,"#000017"],[0.7777777777777778,"#000018"],[0.8888888888888888,"#000019"],[1.0,"#000020"]],"type":"contour"}],"heatmap":[{"colorscale":[[0.0,"#000011"],[0.1111111111111111,"#000012"],[0.2222222222222222,"#000013"],[0.3333333333333333,"#000014"],[0.4444444444444444,"#000015"],[0.5555555555555556,"#000016"],[0.6666666666666666,"#000017"],[0.7777777777777778,"#000018"],[0.8888888888888888,"#000019"],[1.0,"#000020"]],"type":"heatmap"}],"histogram2d":[{"colorscale":[[0.0,"#000011"],[0.1111111111111111,"#000012"],[0.2222222222222222,"#000013"],[0.3333333333333333,"#000014"],[0.4444444444444444,"#000015"],[0.5555555555555556,"#000016"],[0.6666666666666666,"#000017"],[0.7777777777777778,"#000018"],[0.8888888888888888,"#000019"],[1.0,"#000020"]],"type":"histogram2d"}],"icicle":[{"textfont":{"color":"white"},"type":"icicle"}],"sankey":[{"textfont":{"color":"#000036"},"type":"sankey"}],"scatter":[{"marker":{"line":{"width":0}},"type":"scatter"}],"table":[{"cells":{"fill":{"color":"#000038"},"font":{"color":"#000037"},"line":{"color":"#000039"}},"header":{"fill":{"color":"#000040"},"font":{"color":"#000036"},"line":{"color":"#000039"}},"type":"table"}],"waterfall":[{"connector":{"line":{"color":"#000036","width":2}},"decreasing":{"marker":{"color":"#000033"}},"increasing":{"marker":{"color":"#000032"}},"totals":{"marker":{"color":"#000034"}},"type":"waterfall"}]},"layout":{"coloraxis":{"colorscale":[[0.0,"#000011"],[0.1111111111111111,"#000012"],[0.2222222222222222,"#000013"],[0.3333333333333333,"#000014"],[0.4444444444444444,"#000015"],[0.5555555555555556,"#000016"],[0.6666666666666666,"#000017"],[0.7777777777777778,"#000018"],[0.8888888888888888,"#000019"],[1.0,"#000020"]]},"colorscale":{"diverging":[[0.0,"#000021"],[0.1,"#000022"],[0.2,"#000023"],[0.3,"#000024"],[0.4,"#000025"],[0.5,"#000026"],[0.6,"#000027"],[0.7,"#000028"],[0.8,"#000029"],[0.9,"#000030"],[1.0,"#000031"]],"sequential":[[0.0,"#000011"],[0.1111111111111111,"#000012"],[0.2222222222222222,"#000013"],[0.3333333333333333,"#000014"],[0.4444444444444444,"#000015"],[0.5555555555555556,"#000016"],[0.6666666666666666,"#000017"],[0.7777777777777778,"#000018"],[0.8888888888888888,"#000019"],[1.0,"#000020"]],"sequentialminus":[[0.0,"#000011"],[0.1111111111111111,"#000012"],[0.2222222222222222,"#000013"],[0.3333333333333333,"#000014"],[0.4444444444444444,"#000015"],[0.5555555555555556,"#000016"],[0.6666666666666666,"#000017"],[0.7777777777777778,"#000018"],[0.8888888888888888,"#000019"],[1.0,"#000020"]]},"colorway":["#000001","#000002","#000003","#000004","#000005","#000006","#000007","#000008","#000009","#000010"]}}},                        {"responsive": true}                    )                };            </script>        </div></div>
+                    </div>
+                    <h5 class="section-title">🏷️ Resumen por Categoría</h5>
+                    <div class="table-container resumen-monto"><table class="dataframe table table-hover mb-0">
+  <thead>
+    <tr style="text-align: left;">
+      <th>Flujo</th>
+      <th>Categoría</th>
+      <th>Sub-Categoría</th>
+      <th>Monto</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>(+) INGRESO</td>
+      <td>Arriendos</td>
+      <td>Estacionamiento</td>
+      <td>🟢 $ 65.000</td>
+    </tr>
+    <tr>
+      <td>(+) INGRESO</td>
+      <td>Gastos comunes</td>
+      <td>Departamento</td>
+      <td>🟢 $ 1.383.996</td>
+    </tr>
+    <tr>
+      <td>(+) INGRESO</td>
+      <td>Saldo Mes Anterior</td>
+      <td>Edificio</td>
+      <td>🟢 $ 339.885</td>
+    </tr>
+    <tr>
+      <td>(-) EGRESO</td>
+      <td>Administración</td>
+      <td>Bancarios</td>
+      <td>🔴 $ 16.115</td>
+    </tr>
+    <tr>
+      <td>(-) EGRESO</td>
+      <td>Administración</td>
+      <td>Trámites</td>
+      <td>🔴 $ 12.290</td>
+    </tr>
+    <tr>
+      <td>(-) EGRESO</td>
+      <td>Mantención Ascensor</td>
+      <td>Mantención</td>
+      <td>🔴 $ 113.050</td>
+    </tr>
+    <tr>
+      <td>(-) EGRESO</td>
+      <td>Mantención General</td>
+      <td>Emergencias</td>
+      <td>🔴 $ 86.740</td>
+    </tr>
+    <tr>
+      <td>(-) EGRESO</td>
+      <td>Remuneraciones</td>
+      <td>Adelantos</td>
+      <td>🔴 $ 250.000</td>
+    </tr>
+    <tr>
+      <td>(-) EGRESO</td>
+      <td>Remuneraciones</td>
+      <td>Sueldo</td>
+      <td>🔴 $ 469.000</td>
+    </tr>
+    <tr>
+      <td>(-) EGRESO</td>
+      <td>Servicios Básicos</td>
+      <td>Agua</td>
+      <td>🔴 $ 7.670</td>
+    </tr>
+    <tr>
+      <td>(-) EGRESO</td>
+      <td>Servicios Básicos</td>
+      <td>Luz</td>
+      <td>🔴 $ 383.300</td>
+    </tr>
+  </tbody>
+</table></div>
+                    <p style="color: #6c757d; font-size: 0.88rem; margin-bottom: 12px;">
+                        Vista consolidada de los movimientos financieros clasificados por flujo de caja y categoría.
+                    </p>
+                    <hr style="border: none; border-top: 1px solid #dee2e6; margin: 2rem 0;">
+                    <h5 class="section-title">🔎 Detalle de Movimientos </h5>
+                    <div class="table-container detalle-monto" style="font-size: 0.85rem;"><table class="dataframe table table-sm table-striped mb-0">
+  <thead>
+    <tr style="text-align: left;">
+      <th>Flujo</th>
+      <th>Categoría</th>
+      <th>Sub-Categoría</th>
+      <th>Detalle</th>
+      <th>Monto</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>(+) INGRESO</td>
+      <td>Gastos comunes</td>
+      <td>Departamento</td>
+      <td>Departamento - 201</td>
+      <td>🟢 $ 83.960</td>
+    </tr>
+    <tr>
+      <td>(+) INGRESO</td>
+      <td>Gastos comunes</td>
+      <td>Departamento</td>
+      <td>Departamento - 202</td>
+      <td>🟢 $ 168.502</td>
+    </tr>
+    <tr>
+      <td>(+) INGRESO</td>
+      <td>Gastos comunes</td>
+      <td>Departamento</td>
+      <td>Departamento - 203</td>
+      <td>🟢 $ 55.260</td>
+    </tr>
+    <tr>
+      <td>(+) INGRESO</td>
+      <td>Gastos comunes</td>
+      <td>Departamento</td>
+      <td>Departamento - 204</td>
+      <td>🟢 $ 0</td>
+    </tr>
+    <tr>
+      <td>(+) INGRESO</td>
+      <td>Gastos comunes</td>
+      <td>Departamento</td>
+      <td>Departamento - 301</td>
+      <td>🟢 $ 78.780</td>
+    </tr>
+    <tr>
+      <td>(+) INGRESO</td>
+      <td>Gastos comunes</td>
+      <td>Departamento</td>
+      <td>Departamento - 302</td>
+      <td>🟢 $ 68.700</td>
+    </tr>
+    <tr>
+      <td>(+) INGRESO</td>
+      <td>Gastos comunes</td>
+      <td>Departamento</td>
+      <td>Departamento - 303</td>
+      <td>🟢 $ 0</td>
+    </tr>
+    <tr>
+      <td>(+) INGRESO</td>
+      <td>Gastos comunes</td>
+      <td>Departamento</td>
+      <td>Departamento - 304</td>
+      <td>🟢 $ 0</td>
+    </tr>
+    <tr>
+      <td>(+) INGRESO</td>
+      <td>Gastos comunes</td>
+      <td>Departamento</td>
+      <td>Departamento - 401</td>
+      <td>🟢 $ 81.580</td>
+    </tr>
+    <tr>
+      <td>(+) INGRESO</td>
+      <td>Gastos comunes</td>
+      <td>Departamento</td>
+      <td>Departamento - 402</td>
+      <td>🟢 $ 156.666</td>
+    </tr>
+    <tr>
+      <td>(+) INGRESO</td>
+      <td>Gastos comunes</td>
+      <td>Departamento</td>
+      <td>Departamento - 403</td>
+      <td>🟢 $ 55.260</td>
+    </tr>
+    <tr>
+      <td>(+) INGRESO</td>
+      <td>Gastos comunes</td>
+      <td>Departamento</td>
+      <td>Departamento - 404</td>
+      <td>🟢 $ 77.660</td>
+    </tr>
+    <tr>
+      <td>(+) INGRESO</td>
+      <td>Gastos comunes</td>
+      <td>Departamento</td>
+      <td>Departamento - 501</td>
+      <td>🟢 $ 67.780</td>
+    </tr>
+    <tr>
+      <td>(+) INGRESO</td>
+      <td>Gastos comunes</td>
+      <td>Departamento</td>
+      <td>Departamento - 502</td>
+      <td>🟢 $ 53.160</td>
+    </tr>
+    <tr>
+      <td>(+) INGRESO</td>
+      <td>Gastos comunes</td>
+      <td>Departamento</td>
+      <td>Departamento - 503</td>
+      <td>🟢 $ 53.460</td>
+    </tr>
+    <tr>
+      <td>(+) INGRESO</td>
+      <td>Gastos comunes</td>
+      <td>Departamento</td>
+      <td>Departamento - 504</td>
+      <td>🟢 $ 115.620</td>
+    </tr>
+    <tr>
+      <td>(+) INGRESO</td>
+      <td>Gastos comunes</td>
+      <td>Departamento</td>
+      <td>Departamento - 601</td>
+      <td>🟢 $ 89.000</td>
+    </tr>
+    <tr>
+      <td>(+) INGRESO</td>
+      <td>Gastos comunes</td>
+      <td>Departamento</td>
+      <td>Departamento - 602</td>
+      <td>🟢 $ 0</td>
+    </tr>
+    <tr>
+      <td>(+) INGRESO</td>
+      <td>Gastos comunes</td>
+      <td>Departamento</td>
+      <td>Departamento - 701</td>
+      <td>🟢 $ 61.420</td>
+    </tr>
+    <tr>
+      <td>(+) INGRESO</td>
+      <td>Gastos comunes</td>
+      <td>Departamento</td>
+      <td>Departamento - 702</td>
+      <td>🟢 $ 45.000</td>
+    </tr>
+    <tr>
+      <td>(+) INGRESO</td>
+      <td>Gastos comunes</td>
+      <td>Departamento</td>
+      <td>Departamento - 801</td>
+      <td>🟢 $ 0</td>
+    </tr>
+    <tr>
+      <td>(+) INGRESO</td>
+      <td>Gastos comunes</td>
+      <td>Departamento</td>
+      <td>Departamento - 802</td>
+      <td>🟢 $ 72.188</td>
+    </tr>
+    <tr>
+      <td>(+) INGRESO</td>
+      <td>Saldo Mes Anterior</td>
+      <td>Edificio</td>
+      <td>Edificio - Comunidad Edificio</td>
+      <td>🟢 $ 339.885</td>
+    </tr>
+    <tr>
+      <td>(+) INGRESO</td>
+      <td>Arriendos</td>
+      <td>Estacionamiento</td>
+      <td>Edificio - Comunidad Edificio</td>
+      <td>🟢 $ 65.000</td>
+    </tr>
+    <tr>
+      <td>(-) EGRESO</td>
+      <td>Servicios Básicos</td>
+      <td>Agua</td>
+      <td>Agua Gasto Comun</td>
+      <td>🔴 $ 7.670</td>
+    </tr>
+    <tr>
+      <td>(-) EGRESO</td>
+      <td>Servicios Básicos</td>
+      <td>Luz</td>
+      <td>Pago CGE</td>
+      <td>🔴 $ 383.300</td>
+    </tr>
+    <tr>
+      <td>(-) EGRESO</td>
+      <td>Remuneraciones</td>
+      <td>Adelantos</td>
+      <td>Pago quincena Marzo  Sueldo Don Jose</td>
+      <td>🔴 $ 250.000</td>
+    </tr>
+    <tr>
+      <td>(-) EGRESO</td>
+      <td>Remuneraciones</td>
+      <td>Sueldo</td>
+      <td>Pago Fin de Mes don Jose</td>
+      <td>🔴 $ 289.000</td>
+    </tr>
+    <tr>
+      <td>(-) EGRESO</td>
+      <td>Mantención Ascensor</td>
+      <td>Mantención</td>
+      <td>Mantencion Anscensor</td>
+      <td>🔴 $ 113.050</td>
+    </tr>
+    <tr>
+      <td>(-) EGRESO</td>
+      <td>Mantención General</td>
+      <td>Emergencias</td>
+      <td>compra bomba sacado agua (de</td>
+      <td>🔴 $ 56.990</td>
+    </tr>
+    <tr>
+      <td>(-) EGRESO</td>
+      <td>Administración</td>
+      <td>Bancarios</td>
+      <td>Comision Mantencion Plan</td>
+      <td>🔴 $ 13.542</td>
+    </tr>
+    <tr>
+      <td>(-) EGRESO</td>
+      <td>Administración</td>
+      <td>Bancarios</td>
+      <td>Iva por comision /cargos</td>
+      <td>🔴 $ 2.573</td>
+    </tr>
+    <tr>
+      <td>(-) EGRESO</td>
+      <td>Mantención General</td>
+      <td>Emergencias</td>
+      <td>Incomeza Inpeccion para sacado de agua</td>
+      <td>🔴 $ 29.750</td>
+    </tr>
+    <tr>
+      <td>(-) EGRESO</td>
+      <td>Remuneraciones</td>
+      <td>Sueldo</td>
+      <td>Pago Aseo Yamilet</td>
+      <td>🔴 $ 180.000</td>
+    </tr>
+    <tr>
+      <td>(-) EGRESO</td>
+      <td>Administración</td>
+      <td>Trámites</td>
+      <td>Locomocion Fran (Gestion Com</td>
+      <td>🔴 $ 12.290</td>
+    </tr>
+  </tbody>
+</table></div>
+                    <p style="color: #6c757d; font-size: 0.88rem; margin-bottom: 12px;">
+                        Registro completo de ingresos y egresos correspondientes al período seleccionado.
+                    </p>
+                </div>
+
+                <div class="tab-pane fade " id="salud">
+                    <div class="nota-salud" style="background-color: #e74c3c;">
+                        <h3 class="mb-0">🛡️ Diagnóstico del Año: 95.5% de Sostenibilidad</h3>
+                        <p class="mb-0">El edificio gasta más de lo que recauda.</p>
+                    </div>
+
+
+                    <div class="mt-4 mb-2">
+                        <h5 class="section-title">🌊 Análisis de Flujo y Sostenibilidad</h5>
+                        <p class="text-secondary mb-0" style="font-size: 0.95em;">
+                            Comparativa de los últimos 12 meses: <strong>Recaudación Comunidad vs. Gastos Operacionales</strong>.
+                        </p>
+                    </div>
+                    <div class="mt-3 mb-1">
+                        <h6 style="color: #475569; font-size: 0.95em; font-weight: 600; ">
+                            🗓️ Evolución de Ingresos y Egresos Operacionales
+                        </h6>
+                    </div>
+
+
+                    <div class="table-container"><div>                        <script type="text/javascript">window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.3.1.min.js" integrity="sha256-4rD3fugVb/nVJYUv5Ky3v+fYXoouHaBSP20WIJuEiWg=" crossorigin="anonymous"></script>                <div id="4323d099-126f-4938-a708-5d90be069667" class="plotly-graph-div" style="height:700px; width:100%;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("4323d099-126f-4938-a708-5d90be069667")) {                    Plotly.newPlot(                        "4323d099-126f-4938-a708-5d90be069667",                        [{"hovertemplate":"Recaudaci\u00f3n: $ %{y:,.0f}\u003cextra\u003e\u003c\u002fextra\u003e","marker":{"color":"rgba(46, 117, 89, 0.85)"},"name":"Recaudaci\u00f3n Comunidad","x":["06\u002f2025","07\u002f2025","08\u002f2025","09\u002f2025","10\u002f2025","11\u002f2025","12\u002f2025","01\u002f2026","02\u002f2026","03\u002f2026","04\u002f2026","05\u002f2026"],"y":{"dtype":"i4","bdata":"8nwbAMYScgDYGBQAZKsTAGyQEgBqjhEApnoYAFAhEQASHRUAJsIaAI6HFQAkHBYA"},"type":"bar"},{"hovertemplate":"Gastos: $ %{y:,.0f}\u003cextra\u003e\u003c\u002fextra\u003e","line":{"color":"#C0392B","shape":"spline","width":3.5},"marker":{"color":"#FFFFFF","line":{"color":"#C0392B","width":2.5},"size":9,"symbol":"circle"},"mode":"lines+markers","name":"Gastos Reales (L\u00edmite)","x":["06\u002f2025","07\u002f2025","08\u002f2025","09\u002f2025","10\u002f2025","11\u002f2025","12\u002f2025","01\u002f2026","02\u002f2026","03\u002f2026","04\u002f2026","05\u002f2026"],"y":{"dtype":"f8","bdata":"AAAAAF2mQEEAAACAQTBWQQAAAIAtL0tBAAAAAFYyM0EAAAAAAnY0QQAAAACkkDZBAAAAAD15MUEAAAAAPts\u002fQQAAAAAE+y5BAAAAAHJQOkEAAAAAO9k4QQAAAAA1azRB"},"type":"scatter"}],                        {"dragmode":false,"height":700,"hovermode":"x unified","legend":{"font":{"color":"#334155","size":14},"orientation":"h","x":0.5,"xanchor":"center","y":-0.2,"yanchor":"bottom"},"margin":{"b":120,"l":80,"r":20,"t":60},"paper_bgcolor":"rgba(0,0,0,0)","plot_bgcolor":"rgba(0,0,0,0)","separators":",.","template":{"data":{"candlestick":[{"decreasing":{"line":{"color":"#000033"}},"increasing":{"line":{"color":"#000032"}},"type":"candlestick"}],"contourcarpet":[{"colorscale":[[0.0,"#000011"],[0.1111111111111111,"#000012"],[0.2222222222222222,"#000013"],[0.3333333333333333,"#000014"],[0.4444444444444444,"#000015"],[0.5555555555555556,"#000016"],[0.6666666666666666,"#000017"],[0.7777777777777778,"#000018"],[0.8888888888888888,"#000019"],[1.0,"#000020"]],"type":"contourcarpet"}],"contour":[{"colorscale":[[0.0,"#000011"],[0.1111111111111111,"#000012"],[0.2222222222222222,"#000013"],[0.3333333333333333,"#000014"],[0.4444444444444444,"#000015"],[0.5555555555555556,"#000016"],[0.6666666666666666,"#000017"],[0.7777777777777778,"#000018"],[0.8888888888888888,"#000019"],[1.0,"#000020"]],"type":"contour"}],"heatmap":[{"colorscale":[[0.0,"#000011"],[0.1111111111111111,"#000012"],[0.2222222222222222,"#000013"],[0.3333333333333333,"#000014"],[0.4444444444444444,"#000015"],[0.5555555555555556,"#000016"],[0.6666666666666666,"#000017"],[0.7777777777777778,"#000018"],[0.8888888888888888,"#000019"],[1.0,"#000020"]],"type":"heatmap"}],"histogram2d":[{"colorscale":[[0.0,"#000011"],[0.1111111111111111,"#000012"],[0.2222222222222222,"#000013"],[0.3333333333333333,"#000014"],[0.4444444444444444,"#000015"],[0.5555555555555556,"#000016"],[0.6666666666666666,"#000017"],[0.7777777777777778,"#000018"],[0.8888888888888888,"#000019"],[1.0,"#000020"]],"type":"histogram2d"}],"icicle":[{"textfont":{"color":"white"},"type":"icicle"}],"sankey":[{"textfont":{"color":"#000036"},"type":"sankey"}],"scatter":[{"marker":{"line":{"width":0}},"type":"scatter"}],"table":[{"cells":{"fill":{"color":"#000038"},"font":{"color":"#000037"},"line":{"color":"#000039"}},"header":{"fill":{"color":"#000040"},"font":{"color":"#000036"},"line":{"color":"#000039"}},"type":"table"}],"waterfall":[{"connector":{"line":{"color":"#000036","width":2}},"decreasing":{"marker":{"color":"#000033"}},"increasing":{"marker":{"color":"#000032"}},"totals":{"marker":{"color":"#000034"}},"type":"waterfall"}]},"layout":{"coloraxis":{"colorscale":[[0.0,"#000011"],[0.1111111111111111,"#000012"],[0.2222222222222222,"#000013"],[0.3333333333333333,"#000014"],[0.4444444444444444,"#000015"],[0.5555555555555556,"#000016"],[0.6666666666666666,"#000017"],[0.7777777777777778,"#000018"],[0.8888888888888888,"#000019"],[1.0,"#000020"]]},"colorscale":{"diverging":[[0.0,"#000021"],[0.1,"#000022"],[0.2,"#000023"],[0.3,"#000024"],[0.4,"#000025"],[0.5,"#000026"],[0.6,"#000027"],[0.7,"#000028"],[0.8,"#000029"],[0.9,"#000030"],[1.0,"#000031"]],"sequential":[[0.0,"#000011"],[0.1111111111111111,"#000012"],[0.2222222222222222,"#000013"],[0.3333333333333333,"#000014"],[0.4444444444444444,"#000015"],[0.5555555555555556,"#000016"],[0.6666666666666666,"#000017"],[0.7777777777777778,"#000018"],[0.8888888888888888,"#000019"],[1.0,"#000020"]],"sequentialminus":[[0.0,"#000011"],[0.1111111111111111,"#000012"],[0.2222222222222222,"#000013"],[0.3333333333333333,"#000014"],[0.4444444444444444,"#000015"],[0.5555555555555556,"#000016"],[0.6666666666666666,"#000017"],[0.7777777777777778,"#000018"],[0.8888888888888888,"#000019"],[1.0,"#000020"]]},"colorway":["#000001","#000002","#000003","#000004","#000005","#000006","#000007","#000008","#000009","#000010"]}},"title":{"font":{"color":"#1E293B","size":22},"text":"Hist\u00f3rico de Flujo de Caja (12 Meses)"},"xaxis":{"automargin":true,"categoryarray":["06\u002f2025","07\u002f2025","08\u002f2025","09\u002f2025","10\u002f2025","11\u002f2025","12\u002f2025","01\u002f2026","02\u002f2026","03\u002f2026","04\u002f2026","05\u002f2026"],"categoryorder":"array","dtick":1,"fixedrange":true,"tickangle":-30,"tickfont":{"color":"#64748B","size":13},"tickmode":"linear","title":{"font":{"size":15},"text":"Meses Analizados"}},"yaxis":{"fixedrange":true,"gridcolor":"rgba(148, 163, 184, 0.08)","tickfont":{"color":"#64748B","size":13},"tickformat":"$,.0f","zeroline":false}},                        {"responsive": true}                    )                };            </script>        </div></div>
+                    <div class="row">
+                        <div class="col-md-7">
+                            <h5 class="section-title">🍰 ¿Cómo se distribuye el gasto?</h5>
+                            <div class="table-container"><div>                        <script type="text/javascript">window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.3.1.min.js" integrity="sha256-4rD3fugVb/nVJYUv5Ky3v+fYXoouHaBSP20WIJuEiWg=" crossorigin="anonymous"></script>                <div id="367ebbb2-f6ba-431f-9059-7e5921f488cd" class="plotly-graph-div" style="height:500px; width:100%;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("367ebbb2-f6ba-431f-9059-7e5921f488cd")) {                    Plotly.newPlot(                        "367ebbb2-f6ba-431f-9059-7e5921f488cd",                        [{"domain":{"x":[0.0,1.0],"y":[0.0,1.0]},"hole":0.4,"hovertemplate":"\u003cb\u003e%{label}\u003c\u002fb\u003e\u003cbr\u003eMonto: $ %{value:,.0f}\u003cextra\u003e\u003c\u002fextra\u003e","insidetextfont":{"color":"black","size":16},"labels":["Administraci\u00f3n","Aseo e Insumos","Mantenci\u00f3n Ascensor","Mantenci\u00f3n General","Mantenci\u00f3n Portones","Remuneraciones","Servicios B\u00e1sicos"],"legendgroup":"","name":"","showlegend":true,"textinfo":"percent+label","textposition":"inside","values":{"dtype":"f8","bdata":"AAAAABz5L0EAAAAAxJ0SQQAAAADMyjNBAAAAgLi2XUEAAAAAUB8TQQAAAOAPF2FBAAAAgH2QUkE="},"type":"pie"}],                        {"height":500,"legend":{"font":{"size":14},"orientation":"h","tracegroupgap":0,"y":-0.2},"margin":{"b":50,"l":20,"r":20,"t":30},"piecolorway":["rgb(102, 197, 204)","rgb(246, 207, 113)","rgb(248, 156, 116)","rgb(220, 176, 242)","rgb(135, 197, 95)","rgb(158, 185, 243)","rgb(254, 136, 177)","rgb(201, 219, 116)","rgb(139, 224, 164)","rgb(180, 151, 231)","rgb(179, 179, 179)"],"separators":",.","showlegend":true,"template":{"data":{"candlestick":[{"decreasing":{"line":{"color":"#000033"}},"increasing":{"line":{"color":"#000032"}},"type":"candlestick"}],"contourcarpet":[{"colorscale":[[0.0,"#000011"],[0.1111111111111111,"#000012"],[0.2222222222222222,"#000013"],[0.3333333333333333,"#000014"],[0.4444444444444444,"#000015"],[0.5555555555555556,"#000016"],[0.6666666666666666,"#000017"],[0.7777777777777778,"#000018"],[0.8888888888888888,"#000019"],[1.0,"#000020"]],"type":"contourcarpet"}],"contour":[{"colorscale":[[0.0,"#000011"],[0.1111111111111111,"#000012"],[0.2222222222222222,"#000013"],[0.3333333333333333,"#000014"],[0.4444444444444444,"#000015"],[0.5555555555555556,"#000016"],[0.6666666666666666,"#000017"],[0.7777777777777778,"#000018"],[0.8888888888888888,"#000019"],[1.0,"#000020"]],"type":"contour"}],"heatmap":[{"colorscale":[[0.0,"#000011"],[0.1111111111111111,"#000012"],[0.2222222222222222,"#000013"],[0.3333333333333333,"#000014"],[0.4444444444444444,"#000015"],[0.5555555555555556,"#000016"],[0.6666666666666666,"#000017"],[0.7777777777777778,"#000018"],[0.8888888888888888,"#000019"],[1.0,"#000020"]],"type":"heatmap"}],"histogram2d":[{"colorscale":[[0.0,"#000011"],[0.1111111111111111,"#000012"],[0.2222222222222222,"#000013"],[0.3333333333333333,"#000014"],[0.4444444444444444,"#000015"],[0.5555555555555556,"#000016"],[0.6666666666666666,"#000017"],[0.7777777777777778,"#000018"],[0.8888888888888888,"#000019"],[1.0,"#000020"]],"type":"histogram2d"}],"icicle":[{"textfont":{"color":"white"},"type":"icicle"}],"sankey":[{"textfont":{"color":"#000036"},"type":"sankey"}],"scatter":[{"marker":{"line":{"width":0}},"type":"scatter"}],"table":[{"cells":{"fill":{"color":"#000038"},"font":{"color":"#000037"},"line":{"color":"#000039"}},"header":{"fill":{"color":"#000040"},"font":{"color":"#000036"},"line":{"color":"#000039"}},"type":"table"}],"waterfall":[{"connector":{"line":{"color":"#000036","width":2}},"decreasing":{"marker":{"color":"#000033"}},"increasing":{"marker":{"color":"#000032"}},"totals":{"marker":{"color":"#000034"}},"type":"waterfall"}]},"layout":{"coloraxis":{"colorscale":[[0.0,"#000011"],[0.1111111111111111,"#000012"],[0.2222222222222222,"#000013"],[0.3333333333333333,"#000014"],[0.4444444444444444,"#000015"],[0.5555555555555556,"#000016"],[0.6666666666666666,"#000017"],[0.7777777777777778,"#000018"],[0.8888888888888888,"#000019"],[1.0,"#000020"]]},"colorscale":{"diverging":[[0.0,"#000021"],[0.1,"#000022"],[0.2,"#000023"],[0.3,"#000024"],[0.4,"#000025"],[0.5,"#000026"],[0.6,"#000027"],[0.7,"#000028"],[0.8,"#000029"],[0.9,"#000030"],[1.0,"#000031"]],"sequential":[[0.0,"#000011"],[0.1111111111111111,"#000012"],[0.2222222222222222,"#000013"],[0.3333333333333333,"#000014"],[0.4444444444444444,"#000015"],[0.5555555555555556,"#000016"],[0.6666666666666666,"#000017"],[0.7777777777777778,"#000018"],[0.8888888888888888,"#000019"],[1.0,"#000020"]],"sequentialminus":[[0.0,"#000011"],[0.1111111111111111,"#000012"],[0.2222222222222222,"#000013"],[0.3333333333333333,"#000014"],[0.4444444444444444,"#000015"],[0.5555555555555556,"#000016"],[0.6666666666666666,"#000017"],[0.7777777777777778,"#000018"],[0.8888888888888888,"#000019"],[1.0,"#000020"]]},"colorway":["#000001","#000002","#000003","#000004","#000005","#000006","#000007","#000008","#000009","#000010"]}}},                        {"responsive": true}                    )                };            </script>        </div></div>
+                        </div>
+                        <div class="col-md-5">
+                            <h5 class="section-title">💰 Por cada $1.000 que pagas:</h5>
+                            <ul class="list-group shadow-sm"><li class='list-group-item d-flex justify-content-between align-items-center'><b>Remuneraciones</b> <span class='badge bg-primary rounded-pill'>$364</span></li><li class='list-group-item d-flex justify-content-between align-items-center'><b>Mantención General</b> <span class='badge bg-primary rounded-pill'>$316</span></li><li class='list-group-item d-flex justify-content-between align-items-center'><b>Servicios Básicos</b> <span class='badge bg-primary rounded-pill'>$197</span></li><li class='list-group-item d-flex justify-content-between align-items-center'><b>Mantención Ascensor</b> <span class='badge bg-primary rounded-pill'>$52</span></li><li class='list-group-item d-flex justify-content-between align-items-center'><b>Administración</b> <span class='badge bg-primary rounded-pill'>$42</span></li><li class='list-group-item d-flex justify-content-between align-items-center'><b>Mantención Portones</b> <span class='badge bg-primary rounded-pill'>$12</span></li><li class='list-group-item d-flex justify-content-between align-items-center'><b>Aseo e Insumos</b> <span class='badge bg-primary rounded-pill'>$12</span></li></ul>
+                        </div>
+                    </div>
+                    <h5 class="section-title">📋 Desglose Mensual: Recaudación vs. Gastos</h5>
+                    <div class="table-container"><div class="table-responsive"><table class="table table-sm table-hover mb-0"><thead><tr class="text-center"><th>Período</th><th>Recaudación Comunidad</th><th>Gastos Reales</th><th>Diferencia</th></tr></thead><tbody><tr><td class="text-center">06/2025</td><td class="text-center">1.801.458</td><td class="text-center">2.182.330</td><td style="text-align: center; padding-left: 25px; color: #000;">🔴 -380.872</td></tr><tr><td class="text-center">07/2025</td><td class="text-center">7.475.910</td><td class="text-center">5.816.582</td><td style="text-align: center; padding-left: 25px; color: #000;">🟢 1.659.328</td></tr><tr><td class="text-center">08/2025</td><td class="text-center">1.317.080</td><td class="text-center">3.563.099</td><td style="text-align: center; padding-left: 25px; color: #000;">🔴 -2.246.019</td></tr><tr><td class="text-center">09/2025</td><td class="text-center">1.289.060</td><td class="text-center">1.258.070</td><td style="text-align: center; padding-left: 25px; color: #000;">🟢 30.990</td></tr><tr><td class="text-center">10/2025</td><td class="text-center">1.216.620</td><td class="text-center">1.340.930</td><td style="text-align: center; padding-left: 25px; color: #000;">🔴 -124.310</td></tr><tr><td class="text-center">11/2025</td><td class="text-center">1.150.570</td><td class="text-center">1.478.820</td><td style="text-align: center; padding-left: 25px; color: #000;">🔴 -328.250</td></tr><tr><td class="text-center">12/2025</td><td class="text-center">1.604.262</td><td class="text-center">1.145.149</td><td style="text-align: center; padding-left: 25px; color: #000;">🟢 459.113</td></tr><tr><td class="text-center">01/2026</td><td class="text-center">1.122.640</td><td class="text-center">2.087.742</td><td style="text-align: center; padding-left: 25px; color: #000;">🔴 -965.102</td></tr><tr><td class="text-center">02/2026</td><td class="text-center">1.383.698</td><td class="text-center">1.015.170</td><td style="text-align: center; padding-left: 25px; color: #000;">🟢 368.528</td></tr><tr><td class="text-center">03/2026</td><td class="text-center">1.753.638</td><td class="text-center">1.724.530</td><td style="text-align: center; padding-left: 25px; color: #000;">🟢 29.108</td></tr><tr><td class="text-center">04/2026</td><td class="text-center">1.410.958</td><td class="text-center">1.628.475</td><td style="text-align: center; padding-left: 25px; color: #000;">🔴 -217.517</td></tr><tr><td class="text-center">05/2026</td><td class="text-center">1.448.996</td><td class="text-center">1.338.165</td><td style="text-align: center; padding-left: 25px; color: #000;">🟢 110.831</td></tr></tbody></table></div></div>
+                    <p style="color: #6B7280; font-size: 0.85rem; margin-top: 12px; line-height: 1.4; font-style: italic;">
+                        <strong>Nota:</strong> Este cuadro compara el total de ingresos recibidos frente a los egresos ejecutados en cada período. 
+                        La diferencia positiva o negativa representa el excedente o déficit operativo mensual de la comunidad. 
+                        (No considera saldos de arrastre de meses anteriores).
+                    </p>
+                </div>
+
+                <div class="tab-pane fade " id="morosidad">
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6"><div class="card-metric" style="border-top-color: #0d6efd;"><small class="fw-bold">Total Pendiente del Mes (05/2026)</small><div class="h4 text-primary">$ 132.920</div></div></div>
+                        <div class="col-md-6"><div class="card-metric" style="border-top-color: #dc3545;"><small class="fw-bold">Total Deuda Histórica Acumulada</small><div class="h4 text-danger">$ 852.920</div></div></div>
+                    </div>
+                    
+                    <h5 class="section-title">📅 Pendientes del Mes Actual</h5>
+                    <div class="table-container text-center"><table class="dataframe table table-hover mb-0 text-center">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Tipo de Unidad</th>
+      <th>Unidad</th>
+      <th>Monto Actual</th>
+      <th>Estado</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Departamento</td>
+      <td>304</td>
+      <td>$ 77.660</td>
+      <td>🔴 Pendiente</td>
+    </tr>
+    <tr>
+      <td>Departamento</td>
+      <td>403</td>
+      <td>$ 55.260</td>
+      <td>🔴 Pendiente</td>
+    </tr>
+  </tbody>
+</table></div>
+
+                    <hr class="my-5" style="opacity: 0.1;"> 
+                    <div class="alert alert-light border-0 text-muted sm-small mb-4" style="font-size: 0.85rem; background-color: #f8f9fa;">
+                        🔍 <b>Nota sobre Deuda Histórica:</b> Los montos a continuación corresponden a saldos que no fueron cubiertos en meses anteriores y se mantienen pendientes en la contabilidad de la comunidad.
+                    </div>
+
+                    <h5 class="section-title">🕵️ Análisis de Deuda Histórica Acumulada</h5>
+                    <div class="table-container text-center" style="font-size: 0.85rem;"><table style="font-size: 1rem !important; width: 100%;" class="dataframe table table-hover mb-0 text-center">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Tipo de Unidad</th>
+      <th>Unidad</th>
+      <th>Deuda Total Est.</th>
+      <th>Estado</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Departamento</td>
+      <td>202</td>
+      <td>$ 71.640</td>
+      <td>🔴 Pendiente</td>
+    </tr>
+    <tr>
+      <td>Departamento</td>
+      <td>204</td>
+      <td>$ 166.520</td>
+      <td>🔴 Pendiente</td>
+    </tr>
+    <tr>
+      <td>Departamento</td>
+      <td>301</td>
+      <td>$ 78.780</td>
+      <td>🔴 Pendiente</td>
+    </tr>
+    <tr>
+      <td>Departamento</td>
+      <td>303</td>
+      <td>$ 59.460</td>
+      <td>🔴 Pendiente</td>
+    </tr>
+    <tr>
+      <td>Departamento</td>
+      <td>304</td>
+      <td>$ 77.660</td>
+      <td>🔴 Pendiente</td>
+    </tr>
+    <tr>
+      <td>Departamento</td>
+      <td>403</td>
+      <td>$ 221.040</td>
+      <td>🔴 Pendiente</td>
+    </tr>
+    <tr>
+      <td>Departamento</td>
+      <td>701</td>
+      <td>$ 122.840</td>
+      <td>🔴 Pendiente</td>
+    </tr>
+    <tr>
+      <td>Departamento</td>
+      <td>702</td>
+      <td>$ 54.980</td>
+      <td>🔴 Pendiente</td>
+    </tr>
+  </tbody>
+</table></div>
+                </div>
+
+                <div class="tab-pane fade " id="control">
+                    <h5 class="section-title">🗓️ Matriz de Pagos por Departamento (Vista 16 meses)</h5>
+                    <div class="alert alert-warning py-2 shadow-sm" style="font-size: 0.95rem; border-left: 4px solid #ffc107;">
+                        <i class="fas fa-exclamation-circle mr-1"></i>
+                        <b>Nota:</b> Este historial refleja todos los abonos registrados a la fecha de emisión, 
+                        incluyendo pagos anticipados posteriores al periodo de <b>05/2026</b>.
+                    </div>
+                    <div style="font-size: 0.95rem;">
+                    
+                    </div>                    
+                    <div class="table-container"><div class="table-responsive"><table class="table table-sm table-bordered table-control text-center"><thead><tr><th class="sticky-col" style="min-width: 80px; line-height: 1.2;">Departamento<br>N°</th><th style="font-size: 0.8rem; vertical-align: middle;">03/2025</th><th style="font-size: 0.8rem; vertical-align: middle;">04/2025</th><th style="font-size: 0.8rem; vertical-align: middle;">05/2025</th><th style="font-size: 0.8rem; vertical-align: middle;">06/2025</th><th style="font-size: 0.8rem; vertical-align: middle;">07/2025</th><th style="font-size: 0.8rem; vertical-align: middle;">08/2025</th><th style="font-size: 0.8rem; vertical-align: middle;">09/2025</th><th style="font-size: 0.8rem; vertical-align: middle;">10/2025</th><th style="font-size: 0.8rem; vertical-align: middle;">11/2025</th><th style="font-size: 0.8rem; vertical-align: middle;">12/2025</th><th style="font-size: 0.8rem; vertical-align: middle;">01/2026</th><th style="font-size: 0.8rem; vertical-align: middle;">02/2026</th><th style="font-size: 0.8rem; vertical-align: middle;">03/2026</th><th style="font-size: 0.8rem; vertical-align: middle;">04/2026</th><th style="font-size: 0.8rem; vertical-align: middle;">05/2026</th><th style="font-size: 0.8rem; vertical-align: middle;">06/2026</th></tr></thead><tbody><tr><td class="sticky-col fw-bold bg-light">201</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td ></td></tr><tr><td class="sticky-col fw-bold bg-light">202</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td ></td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td></tr><tr><td class="sticky-col fw-bold bg-light">203</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td ></td></tr><tr><td class="sticky-col fw-bold bg-light">204</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td ></td><td style="background-color: #d4edda; color: #155724;">✅</td><td ></td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td ></td></tr><tr><td class="sticky-col fw-bold bg-light">301</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td ></td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td ></td></tr><tr><td class="sticky-col fw-bold bg-light">302</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td ></td></tr><tr><td class="sticky-col fw-bold bg-light">303</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td ></td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td ></td></tr><tr><td class="sticky-col fw-bold bg-light">304</td><td ></td><td ></td><td ></td><td ></td><td ></td><td ></td><td ></td><td ></td><td ></td><td ></td><td ></td><td ></td><td ></td><td ></td><td ></td><td ></td></tr><tr><td class="sticky-col fw-bold bg-light">401</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td ></td></tr><tr><td class="sticky-col fw-bold bg-light">402</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td></tr><tr><td class="sticky-col fw-bold bg-light">403</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td ></td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td ></td><td ></td><td ></td><td ></td></tr><tr><td class="sticky-col fw-bold bg-light">404</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td ></td></tr><tr><td class="sticky-col fw-bold bg-light">501</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td ></td></tr><tr><td class="sticky-col fw-bold bg-light">502</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td ></td></tr><tr><td class="sticky-col fw-bold bg-light">503</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td ></td></tr><tr><td class="sticky-col fw-bold bg-light">504</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td></tr><tr><td class="sticky-col fw-bold bg-light">601</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td ></td></tr><tr><td class="sticky-col fw-bold bg-light">602</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td ></td></tr><tr><td class="sticky-col fw-bold bg-light">701</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td ></td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td ></td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td ></td></tr><tr><td class="sticky-col fw-bold bg-light">702</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td ></td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td></tr><tr><td class="sticky-col fw-bold bg-light">801</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td ></td></tr><tr><td class="sticky-col fw-bold bg-light">802</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td style="background-color: #d4edda; color: #155724;">✅</td><td ></td></tr></tbody></table></div></div>
+                    <div class="alert alert-light border shadow-sm"><small><b>Leyenda:</b> ✅ Pago registrado | ❓ Dato requiere revisión | Celda vacía: Pendiente.</small></div>
+                </div>
+
+                <div class="tab-pane fade " id="tab-pdf">
+                    <div class="alert alert-light border shadow-sm d-flex align-items-center py-2 px-3 mb-4">
+                        <span class="me-2">📅</span>
+                        <span style="color: #5d4037;">Documentación Oficial generada para el periodo <b>05/2026</b></span>
+                    </div>
+                    <h5 class="section-title">📄 Documentos del Periodo</h5>
+                    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#pdf1" type="button">1. Estado de Cuenta</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" data-bs-toggle="pill" data-bs-target="#pdf2" type="button">2. Informe de Gestión</button>
+                        </li>
+                    </ul>
+                    <div class="tab-content" id="pills-tabContent">
+                        <div class="tab-pane fade show active" id="pdf1">
+        <div class="alert alert-primary d-flex justify-content-between align-items-center mb-3">
+            <span>📄 <b>Estado de Cuenta Mensual:</b> Resumen detallado de ingresos y egresos.</span>
+            <a href="data:application/pdf;base64,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MDAwIDY1NTM1IGYgCjAwMDAwMDAwMTUgMDAwMDAgbiAKMDAwMDAwMDExNCAwMDAwMCBuIAowMDAwMDAwMjE3IDAwMDAwIG4gCjAwMDAwMDAyOTggMDAwMDAgbiAKMDAwMDAwMjA3NyAwMDAwMCBuIAowMDAwMDAyMTU4IDAwMDAwIG4gCjAwMDAwMDM4NzYgMDAwMDAgbiAKMDAwMDAwMzk4NyAwMDAwMCBuIAowMDAwMDA3MzkxIDAwMDAwIG4gCjAwMDAwMDc0OTMgMDAwMDAgbiAKMDAwMDAwNzU5OSAwMDAwMCBuIAowMDAwMDA3Njk3IDAwMDAwIG4gCjAwMDAwMDc4MDcgMDAwMDAgbiAKMDAwMDAwNzkxNyAwMDAwMCBuIAowMDAwMDA4MDI3IDAwMDAwIG4gCnRyYWlsZXIKPDwKL1NpemUgMTYKL1Jvb3QgMiAwIFIKL0luZm8gMTUgMCBSCi9JRCBbPEE2NTBFQTRDNjU1OTJBQTY1NkRCRUFCRDFDRjIwQTcxPjxBNjUwRUE0QzY1NTkyQUE2NTZEQkVBQkQxQ0YyMEE3MT5dCj4+CnN0YXJ0eHJlZgo4MDgzCiUlRU9GCg==" download="Estado_Cuenta_Creativa_II_05/2026.pdf" class="btn btn-sm btn-primary">Descargar PDF</a>
+        </div>
+        <iframe src="data:application/pdf;base64,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MDAwIDY1NTM1IGYgCjAwMDAwMDAwMTUgMDAwMDAgbiAKMDAwMDAwMDExNCAwMDAwMCBuIAowMDAwMDAwMjE3IDAwMDAwIG4gCjAwMDAwMDAyOTggMDAwMDAgbiAKMDAwMDAwMjA3NyAwMDAwMCBuIAowMDAwMDAyMTU4IDAwMDAwIG4gCjAwMDAwMDM4NzYgMDAwMDAgbiAKMDAwMDAwMzk4NyAwMDAwMCBuIAowMDAwMDA3MzkxIDAwMDAwIG4gCjAwMDAwMDc0OTMgMDAwMDAgbiAKMDAwMDAwNzU5OSAwMDAwMCBuIAowMDAwMDA3Njk3IDAwMDAwIG4gCjAwMDAwMDc4MDcgMDAwMDAgbiAKMDAwMDAwNzkxNyAwMDAwMCBuIAowMDAwMDA4MDI3IDAwMDAwIG4gCnRyYWlsZXIKPDwKL1NpemUgMTYKL1Jvb3QgMiAwIFIKL0luZm8gMTUgMCBSCi9JRCBbPEE2NTBFQTRDNjU1OTJBQTY1NkRCRUFCRDFDRjIwQTcxPjxBNjUwRUE0QzY1NTkyQUE2NTZEQkVBQkQxQ0YyMEE3MT5dCj4+CnN0YXJ0eHJlZgo4MDgzCiUlRU9GCg==" width="100%" height="800px" style="border-radius: 8px; border: 1px solid #ddd;"></iframe>
+        </div>
+                        <div class="tab-pane fade" id="pdf2">
+        <div class="alert d-flex justify-content-between align-items-center mb-3 shadow-sm" 
+             style="background-color: #2c3e50; color: #ffffff; border-left: 6px solid #f39c12; border-radius: 8px;">
+            <span>
+                <i class="me-2" style="font-size: 1.2rem;">📄</i> 
+                <b style="color: #f39c12;">Informe de Gestión Administrativa:</b> 
+                <span style="opacity: 0.9;">Análisis del Desempeño Financiero.</span>
+            </span>
+            <a href="data:application/pdf;base64,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j+K7CIIPwfjerasIghk0G6svvoZmH98RjSTa3XQdntZe7xoRA939h4KmjfGhabYqSuIycPheL5/kMcsTYAe4/wB7xQAJCmVuZHN0cmVhbQplbmRvYmoKNyAwIG9iago8PAovQmFzZUZvbnQgL0hlbHZldGljYS1Cb2xkCi9FbmNvZGluZyAvV2luQW5zaUVuY29kaW5nCi9TdWJ0eXBlIC9UeXBlMQovVHlwZSAvRm9udAo+PgplbmRvYmoKOCAwIG9iago8PAovQmFzZUZvbnQgL0hlbHZldGljYS1PYmxpcXVlCi9FbmNvZGluZyAvV2luQW5zaUVuY29kaW5nCi9TdWJ0eXBlIC9UeXBlMQovVHlwZSAvRm9udAo+PgplbmRvYmoKOSAwIG9iago8PAovQmFzZUZvbnQgL0hlbHZldGljYQovRW5jb2RpbmcgL1dpbkFuc2lFbmNvZGluZwovU3VidHlwZSAvVHlwZTEKL1R5cGUgL0ZvbnQKPj4KZW5kb2JqCjEwIDAgb2JqCjw8Ci9Gb250IDw8L0YxIDcgMCBSCi9GMiA4IDAgUgovRjMgOSAwIFI+PgovUHJvY1NldCBbL1BERiAvVGV4dCAvSW1hZ2VCIC9JbWFnZUMgL0ltYWdlSV0KPj4KZW5kb2JqCjExIDAgb2JqCjw8Ci9Gb250IDw8L0YxIDcgMCBSCi9GMiA4IDAgUgovRjMgOSAwIFI+PgovUHJvY1NldCBbL1BERiAvVGV4dCAvSW1hZ2VCIC9JbWFnZUMgL0ltYWdlSV0KPj4KZW5kb2JqCjEyIDAgb2JqCjw8Ci9DcmVhdGlvbkRhdGUgKEQ6MjAyNjA2MTgyMDIzMzhaKQo+PgplbmRvYmoKeHJlZgowIDEzCjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAxNSAwMDAwMCBuIAowMDAwMDAwMTA4IDAwMDAwIG4gCjAwMDAwMDAyMTEgMDAwMDAgbiAKMDAwMDAwMDI5MiAwMDAwMCBuIAowMDAwMDAyMDk1IDAwMDAwIG4gCjAwMDAwMDIxNzYgMDAwMDAgbiAKMDAwMDAwMzY4NyAwMDAwMCBuIAowMDAwMDAzNzg5IDAwMDAwIG4gCjAwMDAwMDM4OTQgMDAwMDAgbiAKMDAwMDAwMzk5MSAwMDAwMCBuIAowMDAwMDA0MDk5IDAwMDAwIG4gCjAwMDAwMDQyMDcgMDAwMDAgbiAKdHJhaWxlcgo8PAovU2l6ZSAxMwovUm9vdCAyIDAgUgovSW5mbyAxMiAwIFIKL0lEIFs8RjIwNEVFMThGMEFFMEE4MEJCQkI1OTE3RUUwOUU3QzM+PEYyMDRFRTE4RjBBRTBBODBCQkJCNTkxN0VFMDlFN0MzPl0KPj4Kc3RhcnR4cmVmCjQyNjMKJSVFT0YK" 
+               download="Informe_Gestion_Creativa_II_05/2026.pdf" 
+               class="btn btn-sm fw-bold" 
+               style="background-color: #f39c12; color: #2c3e50; border: none; padding: 5px 15px;">
+                Descargar PDF
+            </a>
+        </div>
+        <iframe src="data:application/pdf;base64,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j+K7CIIPwfjerasIghk0G6svvoZmH98RjSTa3XQdntZe7xoRA939h4KmjfGhabYqSuIycPheL5/kMcsTYAe4/wB7xQAJCmVuZHN0cmVhbQplbmRvYmoKNyAwIG9iago8PAovQmFzZUZvbnQgL0hlbHZldGljYS1Cb2xkCi9FbmNvZGluZyAvV2luQW5zaUVuY29kaW5nCi9TdWJ0eXBlIC9UeXBlMQovVHlwZSAvRm9udAo+PgplbmRvYmoKOCAwIG9iago8PAovQmFzZUZvbnQgL0hlbHZldGljYS1PYmxpcXVlCi9FbmNvZGluZyAvV2luQW5zaUVuY29kaW5nCi9TdWJ0eXBlIC9UeXBlMQovVHlwZSAvRm9udAo+PgplbmRvYmoKOSAwIG9iago8PAovQmFzZUZvbnQgL0hlbHZldGljYQovRW5jb2RpbmcgL1dpbkFuc2lFbmNvZGluZwovU3VidHlwZSAvVHlwZTEKL1R5cGUgL0ZvbnQKPj4KZW5kb2JqCjEwIDAgb2JqCjw8Ci9Gb250IDw8L0YxIDcgMCBSCi9GMiA4IDAgUgovRjMgOSAwIFI+PgovUHJvY1NldCBbL1BERiAvVGV4dCAvSW1hZ2VCIC9JbWFnZUMgL0ltYWdlSV0KPj4KZW5kb2JqCjExIDAgb2JqCjw8Ci9Gb250IDw8L0YxIDcgMCBSCi9GMiA4IDAgUgovRjMgOSAwIFI+PgovUHJvY1NldCBbL1BERiAvVGV4dCAvSW1hZ2VCIC9JbWFnZUMgL0ltYWdlSV0KPj4KZW5kb2JqCjEyIDAgb2JqCjw8Ci9DcmVhdGlvbkRhdGUgKEQ6MjAyNjA2MTgyMDIzMzhaKQo+PgplbmRvYmoKeHJlZgowIDEzCjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAxNSAwMDAwMCBuIAowMDAwMDAwMTA4IDAwMDAwIG4gCjAwMDAwMDAyMTEgMDAwMDAgbiAKMDAwMDAwMDI5MiAwMDAwMCBuIAowMDAwMDAyMDk1IDAwMDAwIG4gCjAwMDAwMDIxNzYgMDAwMDAgbiAKMDAwMDAwMzY4NyAwMDAwMCBuIAowMDAwMDAzNzg5IDAwMDAwIG4gCjAwMDAwMDM4OTQgMDAwMDAgbiAKMDAwMDAwMzk5MSAwMDAwMCBuIAowMDAwMDA0MDk5IDAwMDAwIG4gCjAwMDAwMDQyMDcgMDAwMDAgbiAKdHJhaWxlcgo8PAovU2l6ZSAxMwovUm9vdCAyIDAgUgovSW5mbyAxMiAwIFIKL0lEIFs8RjIwNEVFMThGMEFFMEE4MEJCQkI1OTE3RUUwOUU3QzM+PEYyMDRFRTE4RjBBRTBBODBCQkJCNTkxN0VFMDlFN0MzPl0KPj4Kc3RhcnR4cmVmCjQyNjMKJSVFT0YK" width="100%" height="800px" style="border-radius: 8px; border: 1px solid #ddd;"></iframe>
+        </div>
+                    </div>
+                </div>
+
+                <!-- --- NUEVA PESTAÑA INDEPENDIENTE: COMUNICADOS Y CIRCULARES --- -->
+                <div class="tab-pane fade " id="tab-comunicados">
+                    <div class="alert alert-light border shadow-sm d-flex align-items-center py-2 px-3 mb-4">
+                        <span class="me-2">📁</span>
+                        <span style="color: #5d4037;">Repositorio Informativo y Documentos emitidos por la Administración</span>
+                    </div>
+                    <h5 class="section-title">📌 Historial de Comunicados Oficiales</h5>
+                    
+                <div class="row g-3" style="min-height: 75vh;">
+                    <div class="col-lg-5 col-12" style="max-height: 75vh; overflow-y: auto; padding-right: 10px;">
+                
+                    <div class="col-12 mb-2">
+                        <div class="card shadow-sm border-0 h-100" style="border-left: 4px solid #a8c69f !important; background-color: #ffffff;">
+                            <div class="card-body d-flex align-items-center justify-content-between p-3">
+                                <div class="d-flex align-items-center me-3">
+                                    <div class="pe-2" style="font-size: 1.6rem; color: #8d6e63;">📄</div>
+                                    <div>
+                                        <h6 class="mb-1 text-dark fw-bold" style="font-size: 0.92rem; line-height: 1.3;">Reglamento de Copropiedad Edificio</h6>
+                                        <div class="text-muted d-flex align-items-center gap-2" style="font-size: 0.75rem;">
+                                            <span>📅 01/04/2026</span>
+                                            <span class="mx-1">|</span>
+                                            <span class="badge bg-light text-secondary border px-2 py-0.5" style="font-size: 0.7rem;">📌 Comunidad</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                        <a href="./Comunicados/Reglamento_Copropiedad_Edificio_CreativaII.pdf" target="_blank" onclick="visualizarComunicado('./Comunicados/Reglamento_Copropiedad_Edificio_CreativaII.pdf', 'Reglamento de Copropiedad Edificio'); if(window.innerWidth < 992) return true; else { event.preventDefault(); return false; }" class="btn btn-sm text-white px-3 d-inline-flex align-items-center justify-content-center" style="background-color: #8d6e63; font-weight: 600; font-size: 0.8rem; border-radius: 4px; white-space: nowrap; text-decoration: none;">
+                            Ver Documento
+                        </a>
+                        
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-12 mb-2">
+                        <div class="card shadow-sm border-0 h-100" style="border-left: 4px solid #a8c69f !important; background-color: #ffffff;">
+                            <div class="card-body d-flex align-items-center justify-content-between p-3">
+                                <div class="d-flex align-items-center me-3">
+                                    <div class="pe-2" style="font-size: 1.6rem; color: #8d6e63;">📄</div>
+                                    <div>
+                                        <h6 class="mb-1 text-dark fw-bold" style="font-size: 0.92rem; line-height: 1.3;">Acta de Reunión Comunidad - Abril 2026</h6>
+                                        <div class="text-muted d-flex align-items-center gap-2" style="font-size: 0.75rem;">
+                                            <span>📅 25/04/2026</span>
+                                            <span class="mx-1">|</span>
+                                            <span class="badge bg-light text-secondary border px-2 py-0.5" style="font-size: 0.7rem;">📌 Comunidad</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                        <a href="./Comunicados/Acta_Reunion_Abril_2026.pdf" target="_blank" onclick="visualizarComunicado('./Comunicados/Acta_Reunion_Abril_2026.pdf', 'Acta de Reunión Comunidad - Abril 2026'); if(window.innerWidth < 992) return true; else { event.preventDefault(); return false; }" class="btn btn-sm text-white px-3 d-inline-flex align-items-center justify-content-center" style="background-color: #8d6e63; font-weight: 600; font-size: 0.8rem; border-radius: 4px; white-space: nowrap; text-decoration: none;">
+                            Ver Documento
+                        </a>
+                        
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-12 mb-2">
+                        <div class="card shadow-sm border-0 h-100" style="border-left: 4px solid #a8c69f !important; background-color: #ffffff;">
+                            <div class="card-body d-flex align-items-center justify-content-between p-3">
+                                <div class="d-flex align-items-center me-3">
+                                    <div class="pe-2" style="font-size: 1.6rem; color: #8d6e63;">📄</div>
+                                    <div>
+                                        <h6 class="mb-1 text-dark fw-bold" style="font-size: 0.92rem; line-height: 1.3;">Propuesta de Administración Externa</h6>
+                                        <div class="text-muted d-flex align-items-center gap-2" style="font-size: 0.75rem;">
+                                            <span>📅 08/05/2026</span>
+                                            <span class="mx-1">|</span>
+                                            <span class="badge bg-light text-secondary border px-2 py-0.5" style="font-size: 0.7rem;">📌 Administración</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                        <a href="./Comunicados/Propuesta_Administracion.pdf" target="_blank" onclick="visualizarComunicado('./Comunicados/Propuesta_Administracion.pdf', 'Propuesta de Administración Externa'); if(window.innerWidth < 992) return true; else { event.preventDefault(); return false; }" class="btn btn-sm text-white px-3 d-inline-flex align-items-center justify-content-center" style="background-color: #8d6e63; font-weight: 600; font-size: 0.8rem; border-radius: 4px; white-space: nowrap; text-decoration: none;">
+                            Ver Documento
+                        </a>
+                        
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-12 mb-2">
+                        <div class="card shadow-sm border-0 h-100" style="border-left: 4px solid #a8c69f !important; background-color: #ffffff;">
+                            <div class="card-body d-flex align-items-center justify-content-between p-3">
+                                <div class="d-flex align-items-center me-3">
+                                    <div class="pe-2" style="font-size: 1.6rem; color: #8d6e63;">📄</div>
+                                    <div>
+                                        <h6 class="mb-1 text-dark fw-bold" style="font-size: 0.92rem; line-height: 1.3;">Gastos Comunes - Análisis del Aumento por Departamento</h6>
+                                        <div class="text-muted d-flex align-items-center gap-2" style="font-size: 0.75rem;">
+                                            <span>📅 31/05/2026</span>
+                                            <span class="mx-1">|</span>
+                                            <span class="badge bg-light text-secondary border px-2 py-0.5" style="font-size: 0.7rem;">📌 Administración</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                        <a href="./Comunicados/Gastos_Comunes_Actualizados_2026.pdf" target="_blank" onclick="visualizarComunicado('./Comunicados/Gastos_Comunes_Actualizados_2026.pdf', 'Gastos Comunes - Análisis del Aumento por Departamento'); if(window.innerWidth < 992) return true; else { event.preventDefault(); return false; }" class="btn btn-sm text-white px-3 d-inline-flex align-items-center justify-content-center" style="background-color: #8d6e63; font-weight: 600; font-size: 0.8rem; border-radius: 4px; white-space: nowrap; text-decoration: none;">
+                            Ver Documento
+                        </a>
+                        
+                            </div>
+                        </div>
+                    </div>
+                    
+                    </div>
+                    
+                    <div class="col-lg-7 col-12 d-none d-lg-flex flex-column" style="height: 75vh;">
+                        <div class="d-flex justify-content-between align-items-center p-2 text-white" style="background-color: #4a3b32; border-radius: 6px 6px 0 0; font-size: 0.85rem; font-weight: 600;">
+                            <span id="tituloVisorPDF">🖥️ Visor de Comunicados Oficiales</span>
+                            <a id="enlaceDescargaAlternativo" href="./Comunicados/Reglamento_Copropiedad_Edificio_CreativaII.pdf" download style="color: #a8c69f; text-decoration: none;" >⬇️ Descargar Copia</a>
+                        </div>
+                        <div class="flex-grow-1 border bg-light position-relative" style="border-radius: 0 0 6px 6px; overflow: hidden;">
+                            <iframe id="iframeVisorPDF" src="./Comunicados/Reglamento_Copropiedad_Edificio_CreativaII.pdf" width="100%" height="100%" style="border: none;">
+                                <div class="p-4 text-center text-muted">El visor integrado no está disponible en este navegador.</div>
+                            </iframe id="iframeVisorPDF">
+                            <div id="mensajeVisorVacio" class="position-absolute top-50 start-50 translate-middle text-center w-100 px-3" hidden>
+                                <div style="font-size: 3rem; color: #ccc;">📂</div>
+                                <h6 class="text-muted mt-2">No se ha seleccionado ningún documento válido.</h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <script>
+                function visualizarComunicado(rutaPDF, nombreDocumento) {
+                    var iframe = document.getElementById('iframeVisorPDF');
+                    var titulo = document.getElementById('tituloVisorPDF');
+                    var mensajeVacio = document.getElementById('mensajeVisorVacio');
+                    var enlaceDescarga = document.getElementById('enlaceDescargaAlternativo');
+                    
+                    if (iframe && rutaPDF) {
+                        // Cambiamos dinámicamente el origen del visor e indicamos el título actual
+                        iframe.src = rutaPDF;
+                        titulo.innerText = "🖥️ Viendo: " + nombreDocumento;
+                        
+                        if (mensajeVacio) mensajeVacio.hidden = true;
+                        if (enlaceDescarga) {
+                            enlaceDescarga.href = rutaPDF;
+                            enlaceDescarga.hidden = false;
+                        }
+                    }
+                }
+                </script>
+                
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <div class="container">
+                <p class="mb-1 fw-bold">🏢 Edificio Creativa II - Gestión Financiera</p>
+                <p class="mb-0"> Información actualizada el 18/06/2026 16:23 </p>
+            </div>
+        </footer>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            // Forzar resize de gráficos al cambiar pestañas
+            document.querySelectorAll('button[data-bs-toggle="tab"]').forEach(tab => {
+                tab.addEventListener('shown.bs.tab', () => {
+                    window.dispatchEvent(new Event('resize'));
+                });
+            });
+        </script>
+    </body>
+    </html>
+    

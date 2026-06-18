@@ -1,0 +1,17 @@
+{
+            "name": "SiGes - Gestión de Copropiedades",
+            "short_name": "SiGes",
+            "start_url": "./index.html",
+            "display": "standalone",
+            "background-color": "#f8f9fa",
+            "theme_color": "#1e293b",
+            "orientation": "portrait",
+            "icons": [
+                {
+                    "src": "./Logo.png",
+                    "sizes": "512x512",
+                    "type": "image/png",
+                    "purpose": "any maskable"
+                }
+            ]
+        }

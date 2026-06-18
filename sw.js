@@ -1,13 +1,24 @@
-const CACHE_NAME = 'siges-cache-v1';
+const CACHE_NAME = 'siges-cache-202606181623';
 
 // Fuerza al Service Worker a activarse de inmediato sin esperar
 self.addEventListener('install', (event) => {
     self.skipWaiting();
 });
 
-// Toma el control de la aplicación inmediatamente cuando hay cambios en el servidor
+// Limpia las cachés viejas para que no ocupen espacio en el celular del vecino
 self.addEventListener('activate', (event) => {
-    event.waitUntil(self.clients.claim());
+    event.waitUntil(
+        caches.keys().then((cacheNames) => {
+            return Promise.all(
+                cacheNames.map((cache) => {
+                    if (cache !== CACHE_NAME) {
+                        console.log('Borrando caché antigua:', cache);
+                        return caches.delete(cache);
+                    }
+                })
+            );
+        }).then(() => self.clients.claim())
+    );
 });
 
 // ESTRATEGIA: Network First (Prioriza internet para ver los cambios al tiro)
@@ -15,7 +26,6 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
         fetch(event.request)
             .then((response) => {
-                // Si la red responde bien, guardamos copia fresca en caché y la entregamos
                 if (response && response.status === 200) {
                     const responseClone = response.clone();
                     caches.open(CACHE_NAME).then((cache) => {
@@ -25,7 +35,6 @@ self.addEventListener('fetch', (event) => {
                 return response;
             })
             .catch(() => {
-                // Si el vecino está sin señal en el ascensor, carga lo último guardado
                 return caches.match(event.request);
             })
     );

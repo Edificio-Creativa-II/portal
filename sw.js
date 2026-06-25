@@ -10,6 +10,8 @@ self.addEventListener('activate', (event) => {
     );
 });
 
+// ESTRATEGIA OPTIMIZADA: Desactiva el almacenamiento en el navegador durante la mantención.
+// Si el usuario desliza el dedo hacia abajo, la app puentea directo a GitHub Pages.
 self.addEventListener('fetch', (event) => {
     event.respondWith(
         fetch(event.request, { cache: 'no-store' })

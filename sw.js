@@ -10,8 +10,8 @@ self.addEventListener('activate', (event) => {
     );
 });
 
-// ESTRATEGIA OPTIMIZADA: Desactiva el almacenamiento en el navegador durante la mantención.
-// Si el usuario desliza el dedo hacia abajo, la app puentea directo a GitHub Pages.
+// ESTRATEGIA OPTIMIZADA: Fuerza la petición a internet ignorando la caché del navegador.
+// Esto permite que el gesto manual de "arrastrar con el dedo" funcione de inmediato.
 self.addEventListener('fetch', (event) => {
     event.respondWith(
         fetch(event.request, { cache: 'no-store' })
